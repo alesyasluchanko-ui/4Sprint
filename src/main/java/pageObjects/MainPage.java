@@ -1,50 +1,58 @@
 package pageObjects;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+// Добавлены импорты для реализации ожидания внутри страницы
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import java.time.Duration;
 
+public class MainPage {
 
+    public static final String BASE_URL = "https://qa-scooter.praktikum-services.ru/";
 
-    public class MainPage {
-        private final WebDriver driver;
+    private final WebDriver driver;
+    //локатор в шапке сайта кнопки заказать
+    private final By orderButton = By.xpath(".//div[@class='Header_Header__214zg']//button[text()='Заказать']");
+    //локатор кнопки заказать внизу
+    private final By orderButtonLower = By.xpath(".//div[@class='Home_FinishButton__1_cWm']//button[text()='Заказать']");
+    //кнопка куки
+    private final By cookieButton = By.id("rcc-confirm-button");
 
+    public MainPage(WebDriver driver) {
+        this.driver = driver;
+    }
 
-        //локатор в шапке сайта кнопки заказать
-        private final By orderButton = By.xpath(".//div[@class='Header_Header__214zg']//button[text()='Заказать']");
+    public void clickCookieButton() {
+        driver.findElement(cookieButton).click();
+    }
 
-       private final By orderButtonLower =  By.xpath(".//div[@class='Home_FinishButton__1_cWm']//button[text()='Заказать']");
-        //локатор   кнопки заказать внизу
+    public void clickQuestionButton(String questionId) {
+        driver.findElement(By.id(questionId)).click();
+    }
 
-        private final By cookieButton = By.id("rcc-confirm-button");
-        //кнопка куки
+    public void openPage() {
+        driver.get(BASE_URL);
+    }
 
-
-        public MainPage(WebDriver driver) {
-            this.driver = driver;
+    public void clickOrderButton(String buttonType) {
+        if (buttonType.equals("верхняя")) {
+            driver.findElement(orderButton).click();
+        } else {
+            driver.findElement(orderButtonLower).click();
         }
+    }
 
-        public void clickCookieButton() {
-            driver.findElement(cookieButton).click();
-        }
 
-        public void clickQuestionButton(String questionId) {
-            driver.findElement(By.id(questionId)).click();
-        }
+    public String getAnswerText(String questionId, String panelId) {
+        // Кликаем по раскрывающемуся списку с вопросом
+        clickQuestionButton(questionId);
 
-        public void openPage() {
-            driver.get("https://qa-scooter.praktikum-services.ru/");
-        }
+        // Ждем до 10 секунд, пока элемент ответа станет видимым на странице
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(By.id(panelId)));
 
-        public void clickOrderButton(String buttonType) {
-            if (buttonType.equals("верхняя")) {
-                driver.findElement(orderButton).click();
-            } else {
-                driver.findElement(orderButtonLower).click();
-            }
-        }
-    public String getAnswerText(String panelId) {
+        // Получаем и возвращаем итоговый текст
         return driver.findElement(By.id(panelId)).getText();
     }
 }
-
-
-

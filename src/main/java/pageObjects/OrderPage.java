@@ -81,13 +81,12 @@ public class OrderPage {
 
     // Проверка появления окна по кнопке "Посмотреть статус"
     public boolean isOrderModalDisplayed() {
-        // Расширяем локатор: ждем ЛИБО кнопку "Посмотреть статус", ЛИБО любой текст со словом "Заказ" или "оформлен"
-        By flexibleModalLocator = By.xpath(".//button[text()='Посмотреть статус'] | .//*[contains(text(), 'оформлен')] | .//*[contains(text(), 'Заказ')]");
-
+        // ИСПРАВЛЕНО: Ждем конкретный точный элемент — кнопку "Посмотреть статус" (из вашей переменной orderModal)
+        // без размытых условий "ЛИБО" (|)
         new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.visibilityOfElementLocated(flexibleModalLocator));
+                .until(ExpectedConditions.visibilityOfElementLocated(orderModal));
 
-        return driver.findElement(flexibleModalLocator).isDisplayed();
+        return driver.findElement(orderModal).isDisplayed();
     }
 
     public By getYesButton() {
